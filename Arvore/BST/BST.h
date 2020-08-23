@@ -24,7 +24,7 @@ NO* remover(NO* r, int valor);
 //case 6
 int maior(NO *r);
 //case 7
-NO* menor(NO *raiz);
+int menor(NO *r);
 
 
 //case 8

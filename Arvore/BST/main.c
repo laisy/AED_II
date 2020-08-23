@@ -50,7 +50,7 @@ void main(){
 
             case 7:
                 printf("\nMenor elemento: \n");
-                printf("%d\n",menor(raiz));
+                printf("%d", menor(raiz));
                 printf("\n");
                 break;
 
