@@ -48,6 +48,12 @@ void main(){
                 printf("\n");
                 break;
 
+            case 7:
+                printf("\nMenor elemento: \n");
+                printf("%d\n",menor(raiz));
+                printf("\n");
+                break;
+
             default:
                 ;
         }

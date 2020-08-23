@@ -84,3 +84,13 @@ int maior(NO *r){
         }
     }
 }
+
+int menor(NO *r){
+    if(r != NULL){
+        if(r->esq == NULL){
+            return r->valor;
+        }else{
+            menor(r->esq);
+        }
+    }
+}
