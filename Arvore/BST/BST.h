@@ -19,11 +19,12 @@ void inOrder(NO* r);
 //case 4
 void posOrder(NO* r);
 
-//FAZER
 //case 5
 NO* remover(NO* r, int valor);
 //case 6
-NO* maior(NO *raiz);
+int maior(NO *r);
+
+
 //case 7
 NO* menor(NO *raiz);
 //case 8

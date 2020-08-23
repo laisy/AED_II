@@ -52,3 +52,35 @@ void posOrder(NO* r){
     }
 }
 
+NO* remover(NO* r, int valor){
+    if(r==NULL)
+        return NULL;
+    if(valor == r->valor){
+        if(r->dir == NULL){
+            return r->esq;
+        }
+        if(r->esq==NULL){
+            return r->dir;
+        }
+        r->valor = maior(r->esq); //funçao maior elemento
+        r->esq = remover(r->esq, r->valor);
+        return r;
+    }
+
+    if(valor > r->valor){
+        r->dir = remover(r->dir,valor);
+
+    }else{
+        r->esq = remover(r->esq,valor);
+    }
+}
+
+int maior(NO *r){
+    if(r != NULL){
+        if(r->dir == NULL){
+            return r->valor;
+        }else{
+            maior(r->dir);
+        }
+    }
+}
