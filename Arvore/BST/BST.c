@@ -53,26 +53,36 @@ void posOrder(NO* r){
 }
 
 NO* remover(NO* r, int valor){
-    if(r==NULL)
-        return NULL;
-    if(valor == r->valor){
-        if(r->dir == NULL){
-            return r->esq;
-        }
-        if(r->esq==NULL){
-            return r->dir;
-        }
-        r->valor = maior(r->esq); //funçao maior elemento
-        r->esq = remover(r->esq, r->valor);
-        return r;
-    }
+    if(r==NULL){        //arvore vazia
+		return NULL;
 
-    if(valor > r->valor){
-        r->dir = remover(r->dir,valor);
+	}else if(valor < r->valor){    //valor tá na esquerda
+		r->esq = remover(r->esq, valor);
 
-    }else{
-        r->esq = remover(r->esq,valor);
-    }
+	}else if(valor > r->valor){        //valor tá na direita
+		r->dir = remover(r->dir, valor);
+
+	}else{
+		NO* temp = r;     //NO temporario
+		if(r->esq == NULL && r->dir == NULL){    //Caso 1: sem filhos
+			free(temp);
+			r = NULL;
+		}else if(r->esq == NULL && r->dir != NULL){       //Caso 2: 1 filho
+			r = r->dir;
+			free(temp);
+		}else if(r->esq != NULL && r->dir == NULL){
+			r = r->esq;
+			free(temp);
+		}else{        //Caso 3: 2 filhos
+			NO* novo = r->esq;
+			while(novo->dir != NULL){    //troca pelo menor da dir
+				novo = novo->dir;
+			}
+			r->valor = novo->valor;      //troca
+			r->esq = remover(r->esq, novo->valor);       //remove
+		}
+	}
+	return r;
 }
 
 int maior(NO *r){

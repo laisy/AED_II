@@ -19,55 +19,55 @@ void main(){
                 break;
 
             case 2:
-                printf("\nPre order: \n");
+                //printf("\nPre order: \n");
                 preOrder(arvore);
                 printf("\n");
                 break;
 
             case 3:
-                printf("\nIn order: \n");
+                //printf("\nIn order: \n");
                 inOrder(arvore);
                 printf("\n");
                 break;
 
             case 4:
-                printf("\nPos order: \n");
+                //printf("\nPos order: \n");
                 posOrder(arvore);
                 printf("\n");
                 break;
 
             case 5:
                 scanf("%d", &chave);
-                arvore = remover(arvore, chave);
+                remover(arvore, chave);
                 break;
 
             case 6:
-                printf("\nMaior elemento: \n");
+                //printf("\nMaior elemento: \n");
                 printf("%d", maior(arvore));
                 printf("\n");
                 break;
 
             case 7:
-                printf("\nMenor elemento: \n");
+                //printf("\nMenor elemento: \n");
                 printf("%d", menor(arvore));
                 printf("\n");
                 break;
 
             case 8:
-                printf("\nAltura: \n");
+                //printf("\nAltura: \n");
                 printf("%d", altura(arvore));
                 printf("\n");
                 break;
 
             case 9:
-                printf("\nQuantidade de elementos \n");
+                //printf("\nQuantidade de elementos \n");
                 printf("%d", quantidade_elementos(arvore));
                 printf("\n");
                 break;
 
             case 10:
                 scanf("%d", &chave);
-                printf("\nExiste \n");
+                //printf("\nExiste \n");
                 printf("%d", existe(arvore, chave));
                 printf("\n");
                 break;
@@ -82,7 +82,7 @@ void main(){
 
             case 12:
                 scanf("%d", &chave);
-                printf("\nSucessor: \n");
+                //printf("\nSucessor: \n");
                 printf("%d", sucessor(arvore, chave));
                 printf("\n");
                 break;
