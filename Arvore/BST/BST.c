@@ -28,9 +28,9 @@ NO* inserir(NO* r, int valor){
 void preOrder(NO* r){
     //raiz - esquerda - direita
 	if(r != NULL){
-	printf("[%d]", r->valor);
-	preOrder(r->esq);
-	preOrder(r->dir);
+        printf("[%d]", r->valor);
+        preOrder(r->esq);
+        preOrder(r->dir);
 	}
 }
 
@@ -46,9 +46,9 @@ void inOrder(NO* r){
 void posOrder(NO* r){
     //esquerda - direita - raiz
 	if(r != NULL){
-	posOrder(r->esq);
-	posOrder(r->dir);
-    printf("[%d]", r->valor);
+        posOrder(r->esq);
+        posOrder(r->dir);
+        printf("[%d]", r->valor);
     }
 }
 
@@ -126,7 +126,19 @@ NO* buscar(NO *r, int valor){
     }
 
     return NULL;
+}
 
+int quantidade_elementos(NO *r){
+    int quantidade, contadorEsq, contadorDir;
+    if(r == NULL){
+        return 0;
+    }
+    else{
+        contadorEsq = quantidade_elementos(r->esq);
+        contadorDir = quantidade_elementos(r->dir);
+        quantidade = contadorEsq + contadorDir + 1;
+    }
+    return quantidade;
 }
 
 int existe(NO *r, int valor){
@@ -135,6 +147,8 @@ int existe(NO *r, int valor){
     }
     return 0;
 }
+
+//int predecessor(NO *r, int valor);
 
 int sucessor(NO *r, int valor){
     NO *elemento = buscar(r, valor);

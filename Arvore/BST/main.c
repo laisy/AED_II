@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "BST.h"    //procura no mesmo diretorio
 
-//int main(int argc, char *argv[]){}
 void main(){
 
 	NO* arvore;
@@ -60,14 +59,27 @@ void main(){
                 printf("\n");
                 break;
 
-            //case 9: quantidade de elementos
+            case 9:
+                printf("\nQuantidade de elementos \n");
+                printf("%d", quantidade_elementos(arvore));
+                printf("\n");
+                break;
+
             case 10:
                 scanf("%d", &chave);
                 printf("\nExiste \n");
                 printf("%d", existe(arvore, chave));
                 printf("\n");
                 break;
-            //case 11: predecessor
+
+            /*case 11:
+                scanf("%d", &chave);
+                printf("\Predecessor: \n");
+                printf("%d", predecessor(arvore, chave));
+                printf("\n");
+                break;
+            */
+
             case 12:
                 scanf("%d", &chave);
                 printf("\nSucessor: \n");
