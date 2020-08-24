@@ -37,9 +37,9 @@ void preOrder(NO* r){
 void inOrder(NO* r){
     //esquerda - raiz - direita
 	if(r != NULL){
-	inOrder(r->esq);
-    printf("[%d]", r->valor);
-	inOrder(r->dir);
+        inOrder(r->esq);
+        printf("[%d]", r->valor);
+        inOrder(r->dir);
     }
 }
 
@@ -158,7 +158,37 @@ int existe(NO *r, int valor){
     return 0;
 }
 
-//int predecessor(NO *r, int valor);
+//Elemento que viria antes se fosse uma lista ordenada
+int predecessor(NO *r, int valor){
+	if(r == NULL){
+        return -1;
+	}
+	else if(valor == menor(r)){
+        return 0;
+    }else{
+        NO *temp = buscar(r, valor);
+        int menorValor = menor(r);
+        if(temp != NULL && valor != menorValor  && r != NULL){
+            if(temp->esq != NULL){
+                return maior(temp->esq);
+            }else{
+                NO *cursor = r;
+                NO *pred = NULL;
+                while(temp != cursor && temp != NULL){
+                    if(cursor->valor < temp->valor){
+                        pred = cursor;
+                        cursor = cursor->dir;
+                }else{
+                    cursor = cursor->esq;
+                }
+            }
+            return pred->valor;
+        }
+    }else{
+        return -1;
+        }
+    }
+}
 
 int sucessor(NO *r, int valor){
     NO *elemento = buscar(r, valor);

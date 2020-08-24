@@ -28,15 +28,8 @@ int altura(NO *r);
 int quantidade_elementos(NO *r);
 //case 10
 int existe(NO *r, int valor);    //Retornar 1(existe) ou 0(nao exite);
-
-/*implementação iterativa, procurar o cara
- * temp = temp -> esq
- * temp = temp -> dir
- * if temp -> dir!= null
- * return menor(t->d)
- */
 //case 11
-int predecessor(NO *r, int valor);    //(inOrder)
+int predecessor(NO *r, int valor);    //(principio do inOrder)
 NO* buscar(NO *r, int valor);
 //case 12
 int sucessor(NO *r, int valor);
