@@ -25,14 +25,12 @@ NO* remover(NO* r, int valor);
 int maior(NO *r);
 //case 7
 int menor(NO *r);
-
-
 //case 8
-NO* altura(NO *raiz);
+int altura(NO *r);
 //case 9
-NO* quantidade_elementos(NO *raiz);
+NO* quantidade_elementos(NO *r);
 //case 10
-NO* existe(NO *raiz, int valor);    //Retornar 1(existe) ou 0(nao exite);
+int existe(NO *r, int valor);    //Retornar 1(existe) ou 0(nao exite);
 
 /*implementação iterativa, procurar o cara
  * temp = temp -> esq
@@ -41,8 +39,9 @@ NO* existe(NO *raiz, int valor);    //Retornar 1(existe) ou 0(nao exite);
  * return menor(t->d)
  */
 //case 11
-NO* predecessor(NO *raiz, int valor);    //(inOrder)
+int predecessor(NO *r, int valor);    //(inOrder)
+NO* buscar(NO *r, int valor);
 //case 12
-NO* sucessor(NO *raiz, int valor);  //(sempre a direta)
+int sucessor(NO *r, int valor);
 
 #endif

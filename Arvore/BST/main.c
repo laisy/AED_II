@@ -5,9 +5,9 @@
 //int main(int argc, char *argv[]){}
 void main(){
 
-	NO* raiz;
+	NO* arvore;
     // inicialização da arvore
-	raiz = NULL;
+	arvore = NULL;
 
     int opcao;
     do {
@@ -16,41 +16,62 @@ void main(){
         switch(opcao){
             case 1:
                 scanf("%d", &chave);
-                raiz = inserir(raiz, chave);
+                arvore = inserir(arvore, chave);
                 break;
 
             case 2:
                 printf("\nPre order: \n");
-                preOrder(raiz);
+                preOrder(arvore);
                 printf("\n");
                 break;
 
             case 3:
                 printf("\nIn order: \n");
-                inOrder(raiz);
+                inOrder(arvore);
                 printf("\n");
                 break;
 
             case 4:
                 printf("\nPos order: \n");
-                posOrder(raiz);
+                posOrder(arvore);
                 printf("\n");
                 break;
 
             case 5:
                 scanf("%d", &chave);
-                raiz = remover(raiz, chave);
+                arvore = remover(arvore, chave);
                 break;
 
             case 6:
                 printf("\nMaior elemento: \n");
-                printf("%d", maior(raiz));
+                printf("%d", maior(arvore));
                 printf("\n");
                 break;
 
             case 7:
                 printf("\nMenor elemento: \n");
-                printf("%d", menor(raiz));
+                printf("%d", menor(arvore));
+                printf("\n");
+                break;
+
+            case 8:
+                printf("\nAltura: \n");
+                printf("%d", altura(arvore));
+                printf("\n");
+                break;
+
+            //case 9: quantidade de elementos
+            case 10:
+                scanf("%d", &chave);
+                printf("\nExiste \n");
+                printf("%d", existe(arvore, chave));
+                printf("\n");
+                break;
+            //case 11: predecessor
+            case 12:
+                scanf("%d", &chave);
+                printf("\nSucessor: \n");
+                printf("%d", sucessor(arvore, chave));
                 printf("\n");
                 break;
 
