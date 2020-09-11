@@ -22,12 +22,12 @@ arvore rotacao_simples_dir_caso_remocao(arvore raiz);
 arvore rotacao_dupla_dir(arvore raiz);
 arvore rotacao_dupla_esq(arvore raiz);
 
-arvore remover(arvore raiz, int valor);
+arvore remover(arvore raiz, int valor, int *diminuiu);
 void imprimir(arvore raiz);
 void imprimir_elemento(arvore raiz);
 int altura(arvore raiz);
 int maior(int a, int b);
-int maior_elemento(arvore raiz) ;
+int maior_elemento(arvore raiz);
 int menor_elemento(arvore raiz);
 void pre_order(arvore raiz);
 void pos_order(arvore raiz);

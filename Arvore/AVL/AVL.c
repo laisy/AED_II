@@ -146,12 +146,14 @@ arvore rotacao_dupla_dir(arvore raiz){
     arvore s = r->dir;
 
     // Rotação à esquerda
+
     r->dir = s->esq;
     s->esq = r;
     raiz->esq = s;
 
     //Rotação á direita
-    r->esq = s->dir;
+
+    raiz->esq = s->dir;
     s->dir = raiz;
 
     //Atualizando os fatores de balanço
@@ -182,44 +184,97 @@ arvore rotacao_dupla_esq(arvore raiz){
     //Rotação Direita
     r->esq = s->dir;
     s->dir = r;
-    raiz->dir = r;
+    raiz->dir = s;
 
     //Rotação esquerda
     raiz->dir = s->esq;
     s->esq = raiz;
 
     //Atualizando os fatores de balanço
-    if(s->fb==0){
+    if(s->fb == 0){
         r->fb = 0;
         s->fb = 0;
-        raiz->fb=0;
+        raiz->fb = 0;
 
     }
-    else if(s->fb==-1){
+    else if(s->fb == -1){
 
         r->fb = 1;
         s->fb = 0;
-        raiz->fb= 0;
+        raiz->fb = 0;
     }
      else{
         r->fb = 0;
         s->fb = 0;
-        raiz->fb=-1;
+        raiz->fb =-1;
     }
         return s;
 }
 
 //------------------REMOVER--------------------------------
-arvore remover(arvore raiz, int valor) {
+arvore remover(arvore raiz, int valor, int *diminuiu) {
 
-    int *diminuiu = 0;
     if(raiz == NULL){
-		return NULL;
+        return NULL;
+    }
 
-	}
+    if(valor == raiz->dado){
+        arvore aux;
+        *diminuiu = 1;
+
+        //Sem filhos
+        if(raiz->esq == NULL && raiz->dir == NULL){
+            raiz = NULL;
+            free(aux);
+
+        //Filhos a direita
+        }
+        else if(raiz->esq == NULL && raiz->dir != NULL){
+            aux = raiz;
+            raiz = raiz->dir;
+            free(aux);
+
+        //Filhos a esquerda
+        }
+        else if(raiz->esq != NULL && raiz->dir == NULL){
+            aux = raiz;
+            raiz = raiz->esq;
+            free(aux);
+
+        //Dois filhos
+        }
+        else{
+            raiz->dado = maior_elemento(raiz->esq);
+            raiz->esq = remover(raiz->esq, raiz->dado, diminuiu);
+            if(*diminuiu) {
+                switch(raiz->fb) {
+                    case -1:
+                        raiz->fb = 0;
+                        *diminuiu = 1;
+                        break;
+                case 0:
+                        raiz->fb = 1;
+                        *diminuiu= 0;
+                        break;
+                case 1:
+                        raiz->fb = 2;
+                        if(raiz->dir->fb==0){
+                            *diminuiu= 0;
+                        }else{
+                            *diminuiu= 1;
+
+                        }
+                        return rotacionar(raiz);
+                    }
+
+            }
+        }
+    }
+
     else if(valor < raiz->dado){
 
-    	raiz->esq = remover(raiz->esq, valor);
+        raiz->esq = remover(raiz->esq, valor, diminuiu);
+
         if(*diminuiu) {
             switch(raiz->fb) {
                 case -1:
@@ -232,22 +287,22 @@ arvore remover(arvore raiz, int valor) {
                     break;
                 case 1:
                     raiz->fb = 2;
-                    if(raiz->dir->fb==0){
+                    if(raiz->dir->fb == 0){
                         *diminuiu = 0;
                     }
                     else{
                         *diminuiu = 1;
                     }
                     return rotacionar(raiz);
-                    break;
             }
 
         }
 
-	}
+    }
     else if(valor > raiz->dado){
 
-    	raiz->dir = remover(raiz->dir, valor);
+        raiz->dir = remover(raiz->dir, valor, diminuiu);
+
         if(*diminuiu) {
             switch(raiz->fb) {
                 case -1:
@@ -270,63 +325,8 @@ arvore remover(arvore raiz, int valor) {
                     break;
             }
         }
-	}
-    else{
-		arvore aux = raiz;
-        *diminuiu = 1;
-
-		//Sem filhos
-		if(raiz->esq == NULL && raiz->dir == NULL){
-			free(aux);
-			raiz = NULL;
-
-		//Filhos a direita
-		}
-        else if(raiz->esq == NULL && raiz->dir != NULL){
-			raiz = raiz->dir;
-			free(aux);
-
-		//Filhos a esquerda
-		}
-        else if(raiz->esq != NULL && raiz->dir == NULL){
-		    raiz = raiz->esq;
-		    free(aux);
-
-        //Dois filhos
-		}
-        else{
-			arvore novo = raiz->esq;
-			while(novo->dir != NULL){
-				novo = novo->dir;
-			}
-			raiz->dado = novo->dado;
-			raiz->esq = remover(raiz->esq, novo->dado);
-            if(*diminuiu) {
-                switch(raiz->fb) {
-                    case -1:
-                        raiz->fb = 0;
-                        *diminuiu = 1;
-                        break;
-                    case 0:
-                        raiz->fb = 1;
-                        *diminuiu = 0;
-                        break;
-                    case 1:
-                        raiz->fb = 2;
-                        if(raiz->dir->fb == 0){
-                            *diminuiu = 0;
-                        }
-                        else{
-                            *diminuiu = 1;
-                        }
-                        return rotacionar(raiz);
-                        break;
-                    }
-            }
-
-		}
-	}
-	return raiz;
+    }
+    return raiz;
 }
 
 
