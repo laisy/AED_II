@@ -296,3 +296,34 @@ arvore carregar_arquivo(char *nome, arvore a, int *cresceu) {
 	}
 	return a;
 }
+
+void buscarCodigo(char *nome, arvore raiz, int codigo){
+    tipo_dado result;
+    int tam;
+    double Vet[100];
+
+    if(raiz != NULL){
+        if(codigo == raiz->dado->codigo){
+            FILE *arq;
+            arq = fopen(nome, "rb");
+            tipo_dado * temp;
+            if(arq != NULL) {
+                temp = (tipo_dado *) malloc(sizeof(tipo_dado));
+                while(fread(temp, sizeof(tipo_dado), 1, arq)) {
+
+                    temp = (tipo_dado *) malloc(sizeof(tipo_dado));
+
+                    tam = fread(&Vet[0], sizeof(double), 100, arq);
+                    int i;
+                    for(i=0; i<tam; i++){
+                        printf("%lf\n", Vet[i]);
+                    }
+                }
+                fclose(arq);
+            } printf("Arquivo NULL");
+        }
+        else{
+            printf("Código não encontrado na arvore!");
+        }
+    }
+}

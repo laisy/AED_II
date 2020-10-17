@@ -7,8 +7,9 @@ int main(int argc, char * argv[]) {
 	int opcao;
     int controleFB;
 	inicializar(&a);
+    int codigo;
 
-    printf(" 1 - ADICIONAR \n 2 - PRE-ORDER \n 3 - IN-ORDER \n 4 - POS-ORDER \n 5 - SALVAR-ARQUIVO \n 6 - CARREGAR ARQUIVO \n 99 - SAIR \n");
+    printf(" 1 - ADICIONAR \n 2 - PRE-ORDER \n 3 - IN-ORDER \n 4 - POS-ORDER \n 5 - SALVAR-ARQUIVO \n 6 - CARREGAR ARQUIVO \n 7 - EXIBIR \n 99 - SAIR \n");
 
 	while(1) {
 		scanf("%d", &opcao);
@@ -38,6 +39,9 @@ int main(int argc, char * argv[]) {
 				case 6:
 						a = carregar_arquivo("dados.dat", a, &controleFB);
 						break;
+                case 7:
+                        scanf("%d", &codigo);
+                        buscarCodigo("dados.dat", a, codigo);
 				case 99:
 						exit(0);
 		}
