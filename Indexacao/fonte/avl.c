@@ -296,29 +296,20 @@ arvore carregar_arquivo(char *nome, arvore a, int *cresceu) {
 	return a;
 }
 
-void buscarCodigo(char *nome, arvore raiz, int codigo, int *cresceu){
-
-    raiz = carregar_arquivo(nome, raiz, cresceu);
+void buscarCodigo(arvore raiz, int codigo){
     if(raiz != NULL){
         if(codigo == raiz->dado->codigo){
-            FILE *arq;
-            arq = fopen(nome, "rb");
-            char conteudo[999];
-
-            if(arq != NULL) {
-                printf("\nLIVRO");
-                printf("\nTítulo: %s", raiz->dado->titulo);
-                printf("\nAutor: %s", raiz->dado->autor);
-                printf("Ano: %s", raiz->dado->ano);
-                printf("Codigo: %d\n", raiz->dado->codigo);
-
-                    }
-
-                fclose(arq);
+            printf("\nLIVRO");
+            printf("\nTítulo: %s", raiz->dado->titulo);
+            printf("\nAutor: %s", raiz->dado->autor);
+            printf("Ano: %s", raiz->dado->ano);
+            printf("Codigo: %d\n", raiz->dado->codigo);
             }
+        else if(codigo > raiz->dado->codigo){
+            buscarCodigo(raiz->dir, codigo);
         }
-        else{
-            printf("Código não encontrado!");
+        else if(codigo < raiz->dado->codigo){
+            buscarCodigo(raiz->esq, codigo);
         }
-
+    }
 }

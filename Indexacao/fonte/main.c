@@ -42,7 +42,8 @@ int main(int argc, char * argv[]) {
                 case 7:
                         printf("\nCÓDIGO DO LIVRO:\n");
                         scanf("%d", &codigo);
-                        buscarCodigo("dados.txt", a, codigo, &controleFB);
+                        buscarCodigo(a, codigo);
+                        break;
 				case 99:
 						exit(0);
 		}

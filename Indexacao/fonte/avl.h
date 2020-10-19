@@ -42,6 +42,6 @@ void salvar_arquivo(char *nome, arvore a);
 void salvar_auxiliar(arvore raiz, FILE *arq);
 arvore carregar_arquivo(char *nome, arvore a, int *cresceu);
 
-void buscarCodigo(char *nome, arvore raiz, int codigo, int *cresceu);
+void buscarCodigo(arvore raiz, int codigo);
 
 #endif
