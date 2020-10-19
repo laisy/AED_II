@@ -292,38 +292,33 @@ arvore carregar_arquivo(char *nome, arvore a, int *cresceu) {
 
 		}
 		fclose(arq);
-
 	}
 	return a;
 }
 
-void buscarCodigo(char *nome, arvore raiz, int codigo){
-    tipo_dado result;
-    int tam;
-    double Vet[100];
+void buscarCodigo(char *nome, arvore raiz, int codigo, int *cresceu){
 
+    raiz = carregar_arquivo(nome, raiz, cresceu);
     if(raiz != NULL){
         if(codigo == raiz->dado->codigo){
             FILE *arq;
             arq = fopen(nome, "rb");
-            tipo_dado * temp;
+            char conteudo[999];
+
             if(arq != NULL) {
-                temp = (tipo_dado *) malloc(sizeof(tipo_dado));
-                while(fread(temp, sizeof(tipo_dado), 1, arq)) {
+                printf("\nLIVRO");
+                printf("\nTítulo: %s", raiz->dado->titulo);
+                printf("\nAutor: %s", raiz->dado->autor);
+                printf("Ano: %s", raiz->dado->ano);
+                printf("Codigo: %d\n", raiz->dado->codigo);
 
-                    temp = (tipo_dado *) malloc(sizeof(tipo_dado));
-
-                    tam = fread(&Vet[0], sizeof(double), 100, arq);
-                    int i;
-                    for(i=0; i<tam; i++){
-                        printf("%lf\n", Vet[i]);
                     }
-                }
+
                 fclose(arq);
-            } printf("Arquivo NULL");
+            }
         }
         else{
-            printf("Código não encontrado na arvore!");
+            printf("Código não encontrado!");
         }
-    }
+
 }

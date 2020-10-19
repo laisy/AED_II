@@ -33,15 +33,16 @@ int main(int argc, char * argv[]) {
 						printf("\n");
 						break;
 				case 5:
-						salvar_arquivo("dados.dat", a);
+						salvar_arquivo("dados.txt", a);
 						break;
 
 				case 6:
-						a = carregar_arquivo("dados.dat", a, &controleFB);
+						a = carregar_arquivo("dados.txt", a, &controleFB);
 						break;
                 case 7:
+                        printf("\nCÓDIGO DO LIVRO:\n");
                         scanf("%d", &codigo);
-                        buscarCodigo("dados.dat", a, codigo);
+                        buscarCodigo("dados.txt", a, codigo, &controleFB);
 				case 99:
 						exit(0);
 		}
