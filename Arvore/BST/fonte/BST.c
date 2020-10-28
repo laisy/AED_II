@@ -54,32 +54,33 @@ void posOrder(NO* r){
 
 NO* remover(NO* r, int valor){
     if(r==NULL){        //arvore vazia
-		return NULL;
+		return r;
 
-	}else if(valor < r->valor){    //valor tá na esquerda
+	}
+	if(valor < r->valor){    //valor tá na esquerda
 		r->esq = remover(r->esq, valor);
 
 	}else if(valor > r->valor){        //valor tá na direita
 		r->dir = remover(r->dir, valor);
 
 	}else{
-		NO* temp = r;     //NO temporario
 		if(r->esq == NULL && r->dir == NULL){    //Caso 1: sem filhos
-			free(temp);
-			r = NULL;
-		}else if(r->esq == NULL && r->dir != NULL){       //Caso 2: 1 filho
-			r = r->dir;
-			free(temp);
-		}else if(r->esq != NULL && r->dir == NULL){
-			r = r->esq;
-			free(temp);
+			free(r);
+			return NULL;
+		}
+		else if(r->esq == NULL || r->dir == NULL){       //Caso 2: 1 filho	
+			NO* temp;
+			if(r->esq == NULL){
+				temp = r->dir;
+			}else{
+				temp = r->esq;
+			} 
+			free(r);
+			return temp;
 		}else{        //Caso 3: 2 filhos
-			NO* novo = r->esq;
-			while(novo->dir != NULL){    //troca pelo menor da dir
-				novo = novo->dir;
-			}
-			r->valor = novo->valor;      //troca
-			r->esq = remover(r->esq, novo->valor);       //remove
+			NO *temp = menorAux(r->dir);
+			r->valor = temp->valor;
+			r->dir = remover(r->dir, temp->valor);
 		}
 	}
 	return r;
@@ -103,6 +104,13 @@ int menor(NO *r){
             menor(r->esq);
         }
     }
+}
+
+NO* menorAux(NO *r){	//precisava de duas funções de menor, uma que retornasse o NO e outra o valor int
+    while(r != NULL && r->esq != NULL){
+      r = r->esq;
+    }
+    return r;
 }
 
 int altura(NO *r){

@@ -22,6 +22,7 @@ NO* remover(NO* r, int valor);
 int maior(NO *r);
 //case 7
 int menor(NO *r);
+NO* menorAux(NO *r);
 //case 8
 int altura(NO *r);
 //case 9
