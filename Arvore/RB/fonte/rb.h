@@ -5,25 +5,23 @@ enum cor {VERMELHO, PRETO, DUPLO_PRETO};
 
 typedef  int  tipo_dado;
 
-typedef struct no{
-    enum cor cor;
+typedef struct no_bst{
     tipo_dado dado;
-    struct no *esq, *dir, *pai;
-}no;
+    enum cor cor;
+    struct no_bst *esq, *dir, *pai;
+} no_bst;
 
-typedef no * arvore;
+typedef no_bst *arvore;
 
 void inicializar(arvore *raiz);
-void inserir (tipo_dado dado, arvore *raiz);
+void inserir(tipo_dado dado, arvore *raiz);
 void ajustar(arvore *raiz, arvore dado);
 
 enum cor cor(arvore n);
-int eh_esquerdo(arvore n);
-int eh_direito(arvore n);
 int eh_raiz(arvore n);
-int eh_nulo(arvore dado);
+int eh_filho_esquerdo(arvore dado);
+arvore irmao(arvore dado);
 arvore tio (arvore n);
-arvore Avo(arvore n);
 void recolorir(arvore n);
 
 //////////// impressões ////////////////////////////
@@ -40,22 +38,13 @@ int menor_elemento(arvore raiz);
 
 void remover(int elemento, arvore *raiz);
 void reajustar(arvore *raiz, arvore n);
+void retira_duplo_preto(arvore *raiz, arvore dado);
 
 ////////////////////casos/////////////////////////////////
-void caso2(arvore *raiz, arvore n);
-void caso2_simetrico(arvore *raiz, arvore n);
-
-void caso3(arvore *raiz, arvore n);
-void caso3_simetrico(arvore *raiz, arvore n);
-
-void caso4(arvore *raiz, arvore n);
-void caso4_simetrico(arvore *raiz, arvore n);
-
-void caso5(arvore *raiz, arvore n);
-void caso5_simetrico(arvore *raiz, arvore n);
-
-void caso6(arvore *raiz, arvore n);
-void caso6_simetrico(arvore *raiz, arvore n);
+void rotacao_simples_direita(arvore *raiz, arvore pivo);
+void rotacao_simples_esquerda(arvore *raiz, arvore pivo);
+void rotacao_dupla_direita(arvore *raiz, arvore pivo);
+void rotacao_dupla_esquerda(arvore *raiz, arvore pivo);
 
 ////////////////////////////////////////////////////////
 

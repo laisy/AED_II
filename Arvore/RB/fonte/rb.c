@@ -1,292 +1,83 @@
-#include "rb.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "rb.h"
 
 arvore no_null;
 
 void inicializar(arvore *raiz) {
 	*raiz = NULL;
-	no_null = (arvore) malloc(sizeof(struct no));
-	no_null->cor = DUPLO_PRETO;
+	no_null = (arvore) malloc(sizeof(struct no_bst));
+	no_null -> cor = DUPLO_PRETO;
 	no_null->dado = 0;
 }
 
-void inserir(int dado, arvore *raiz){
-    arvore temp, pai, novo;
-    temp = *raiz;
-    pai = NULL;
+void inserir (int valor, arvore *raiz) {
+	arvore posicao, pai, novo;
 
-    while(temp != NULL){
+	posicao = *raiz;
+	pai = NULL;
 
-        pai = temp;
+	while(posicao != NULL) {
+		pai = posicao;
 
-        if(dado > temp->dado){
-            temp = temp->dir;
-        }
-        else{
-            temp = temp->esq;
-        }
-    }
-    novo = (arvore)malloc(sizeof(struct no));
-    novo->dado = dado;
-    novo->esq = NULL;
-    novo->dir = NULL;
-    novo->pai = pai;
-    novo->cor = VERMELHO;
+		if(valor > posicao->dado){ 
+			posicao = posicao->dir;
+		} 
+        else{ 
+		    posicao = posicao->esq;
+		}
+	}
+    //Achou a posicao, inicializa o novo elemento
+	novo = (arvore) malloc(sizeof(struct no_bst));
+	novo->dado = valor;
+	novo->esq = NULL;
+	novo->dir = NULL;
+	novo->pai = pai;
+	novo->cor = VERMELHO;
 
-    if(eh_raiz(novo))
-        *raiz = novo;
-	else {
-		if(dado > pai->dado){
+	if(eh_raiz(novo))	{
+		*raiz = novo;
+		novo -> cor = PRETO;
+	} 
+    else {
+		if(valor > pai->dado){
 			pai->dir = novo;
         }
-		else
+		else{
 			pai->esq = novo;
+        }
 	}
-
-    ajustar(raiz, novo);
+	ajustar(raiz, novo);
 }
 
-int eh_raiz(arvore n){
-    return(n->pai == NULL);
+enum cor cor(arvore elemento) {
+	enum cor c;
+	if(elemento==NULL || elemento->cor == PRETO){
+		c = PRETO;
+    }
+	else{
+		c = VERMELHO;
+    }
+	return c;
 }
 
-int eh_esquerdo(arvore n){
-    return(n->pai != NULL && n == n->pai->esq);
-}
-int eh_direito(arvore n){
-    return(n->pai !=NULL && n == n->pai->dir);
+int eh_raiz(arvore elemento) {
+	return (elemento->pai == NULL);
 }
 
-int eh_nulo(arvore dado){
-	return (dado->pai != NULL && dado->dado == 0  && dado->esq == NULL && dado->dir == NULL && dado->cor == DUPLO_PRETO);
+int eh_filho_esquerdo(arvore elemento) {
+	return (elemento->pai != NULL && elemento == elemento->pai->esq);
 }
 
-arvore tio(arvore n){
-    if(eh_esquerdo(n->pai)){
-        return n->pai->pai->dir;
-    }
-    else{
-        return n->pai->pai->esq;
-    }
+arvore tio(arvore elemento) {
+	return irmao(elemento->pai);
 }
 
-arvore Avo(arvore n){
-    if(n->pai!=NULL){
-        return n->pai->pai;
-    }else{
-        return NULL;
-    }
-}
-
-////////////// ROTAÇÕES //////////////////////
-void rotacao_simples_direita(arvore *raiz, arvore n){
-    arvore u, t2;
-    u = n->esq;
-    t2 = u->dir;
-
-    //rotação
-    n->esq = t2;
-    u->dir = n;
-
-    //colorir
-    u->cor = PRETO;
-    n->cor = VERMELHO;
-
-    //atualizar pais
-    if(t2!=NULL){
-        t2->pai = n;
-    }
-    u->pai = n->pai;
-
-    if(eh_raiz(n)){
-        *raiz = u;
-    }else{
-        if(eh_direito(n)){
-            n->pai->dir = u;
-        }else{
-            n->pai->esq = u;
-        }
-    }
-    n->pai = u;
-
-}
-
-void rotacao_simples_esquerda(arvore *raiz, arvore n){
-
-    arvore u, t2;
-    u = n->dir;
-    t2 = u->esq;
-
-    n->dir = t2;
-
-    if(t2!=NULL){
-        t2->pai = n;
-    }
-
-    u->esq = n;
-    u->pai = n->pai;
-
-   if(eh_raiz(n)){
-       *raiz = u;
-    }else{
-        if(eh_esquerdo(n)){
-            n->pai->esq = u;
-        }else{
-            n->pai->dir = u;
-        }
-    }
-     n->pai = u;
-    //corrigindo cores
-    u->cor=PRETO;
-    n->cor = VERMELHO;
-
-}
-void rotacao_dupla_esquerda(arvore *raiz, arvore n){
-
-    arvore u, v, t2, t3;
-    u = n->dir;
-    v = u->esq;
-    t2 = v->esq;
-    t3 = v->dir;
-
-    //primeira rotaçao
-    u->esq = t3;
-    v->dir= u;
-    n->dir= v;
-
-    //segunda rotação
-    n->dir = t2;
-    v->esq = n;
-
-    //atualizar cores
-    v->cor = PRETO;
-    n->cor = VERMELHO;
-
-    //atualizar pais
-    if(t2 != NULL){
-        t2->pai = n;
-    }
-    if(t3 != NULL){
-        t3->pai = u;
-    }
-
-    u->pai = v;
-    v->pai = n->pai;
-
-    if(eh_raiz(n)){
-        *raiz = v;
-    }else{
-        if(eh_direito(n)){
-            n->pai->dir = v;
-        }else{
-            n->pai->esq = v;
-        }
-    }
-    n->pai = v;
-
-}
-void rotacao_dupla_direita(arvore *raiz, arvore n){
-
-    arvore u, v, t2, t3;
-    u = n->esq;
-    v = u->dir;
-    t2 = v->esq;
-    t3 = v->dir;
-
-    //primeira rotaçao
-    u->dir = t2;
-    v->esq = u;
-    n->esq= v;
-
-    //segunda rotação
-    n->esq = t3;
-    v->dir = n;
-
-    //atualizar cores
-    v->cor = PRETO;
-    n->cor = VERMELHO;
-
-    //atualizar pais
-    if(t2!=NULL){
-        t2->pai = u;
-    }
-    if(t3!=NULL){
-        t3->pai = n;
-    }
-    u->pai = v;
-    v->pai = n->pai;
-    if(eh_raiz(n)){
-        *raiz = v;
-    }else{
-        if(eh_direito(n)){
-            n->pai->dir = v;
-        }else{
-            n->pai->esq = v;
-        }
-    }
-    n->pai = v;
-}
-////////////////////////////////////////////////////
-
-void recolorir(arvore n){
-    arvore avo = Avo(n);
-    if(eh_raiz(avo)){
-         avo->esq->cor= PRETO;
-         avo->dir->cor=PRETO;
-    }else{
-        avo->cor=VERMELHO;
-        avo->esq->cor= PRETO;
-        avo->dir->cor=PRETO;
-    }
-}
-
-void ajustar(arvore *raiz, arvore n){
-    if(n->pai == NULL){
-        n->cor = PRETO;
-        *raiz = n;
-    }
-    else if(cor(n->pai) == VERMELHO && cor(n) == VERMELHO){
-        //caso 1: tio é vermelho
-        if(tio != NULL && cor(tio(n)) == VERMELHO){
-            recolorir(n);
-            ajustar(raiz, n->pai->pai);
-        }
-        //caso 2: tio é preto e n é filho esquerdo e pai é esquerdo
-        if(eh_esquerdo(n) && eh_esquerdo(n->pai)){
-            rotacao_simples_direita(raiz, n->pai->pai);
-        }
-        //caso 3: tio é preto, n é filho esquerdo e pai de n é direito
-        if(eh_direito(n) && eh_direito(n->pai)){
-            rotacao_simples_esquerda(raiz, n->pai->pai);
-        }
-        //caso 2: tio é preto e n é filho esquerdo e pai é direito
-        if(eh_esquerdo(n) && eh_direito(n->pai)){
-            rotacao_dupla_esquerda(raiz, n->pai->pai);
-        }
-        //caso 3: tio é preto, n é filho esquerdo e pai de n é esquerdo
-        if(eh_direito(n) && eh_esquerdo(n->pai)){
-            rotacao_dupla_direita(raiz, n->pai->pai);
-            }
-        }
-}
-
-enum cor cor(arvore n){
-    enum cor cor;
-	if(n==NULL || n->cor == PRETO)
-		return PRETO;
+arvore irmao(arvore elemento) {
+	if(eh_filho_esquerdo(elemento))
+		return elemento->pai->dir;
 	else
-		return VERMELHO;
-}
-
-void imprimir(arvore raiz) {
-	printf("(");
-	if(raiz != NULL) {
-		imprimir_elemento(raiz);
-		imprimir(raiz->esq);
-		imprimir(raiz->dir);
-	}
-	printf(")");
+		return elemento->pai->esq;
 }
 
 int altura(arvore raiz) {
@@ -304,15 +95,12 @@ int maior(int a, int b) {
 }
 
 int maior_elemento(arvore raiz) {
-	if(raiz == NULL){
-		return -1;
-	}
-	if(raiz->dir == NULL){
-		return raiz->dado;
-	}
-	else{
-		return maior_elemento(raiz->dir);
-	}
+	if(raiz == NULL)
+			return -1;
+	if(raiz->dir == NULL)
+			return raiz->dado;
+	else
+			return maior_elemento(raiz->dir);
 }
 
 int menor_elemento(arvore raiz) {
@@ -322,6 +110,17 @@ int menor_elemento(arvore raiz) {
 			return raiz->dado;
 	else
 			return maior_elemento(raiz->esq);
+}
+
+///////////////////////////IMPRESSOES //////////////////////////////
+void imprimir(arvore raiz) {
+	printf("(");
+	if(raiz != NULL) {
+		imprimir_elemento(raiz);
+		imprimir(raiz->esq);
+		imprimir(raiz->dir);
+	}
+	printf(")");
 }
 
 void pre_order(arvore raiz) {
@@ -362,396 +161,315 @@ void imprimir_elemento(arvore raiz) {
 	}
 }
 
-void remover(int dado, arvore *raiz) {
-	arvore temp, pai;
-    temp = *raiz;
-    pai = NULL;
-
-	while(temp != NULL && temp->dado != dado) {
-        pai = temp;
-        if(dado > temp->dado) {
-           	temp = temp->dir;
+////////////////////////////////////////////////////////////////////////
+void retira_duplo_preto(arvore *raiz, arvore elemento) {
+	if(elemento == no_null)
+		if(eh_filho_esquerdo(elemento)){
+			elemento->pai->esq = NULL;
         }
-		else {
-        	temp = temp->esq;
+		else{
+			elemento->pai->dir = NULL;
         }
+	else{
+		elemento->cor = PRETO;
     }
-    if(temp == NULL){
-        return ;
+}
+
+void rotacao_simples_direita(arvore *raiz, arvore pivo){
+	arvore u, t1;
+	u = pivo->esq;
+    t1 = u->dir;
+
+	int posicao_pivo_esq = eh_filho_esquerdo(pivo);
+	pivo->esq = t1;
+
+    if(t1 != NULL){
+        t1->pai = pivo;
+    }
+
+	u->dir = pivo;    
+	u->pai = pivo->pai;
+	pivo->pai = u;
+
+    pivo->cor = VERMELHO;
+	u->cor = PRETO;
+
+	if(eh_raiz(u))
+		*raiz = u;
+	else{
+	    if(posicao_pivo_esq){
+	    	u->pai->esq = u;
+		} 
+        else {
+    		u->pai->dir = u;
+		}
+	}
+}
+
+void rotacao_simples_esquerda(arvore *raiz, arvore pivo) {
+	arvore u, t1;
+	u = pivo -> dir;
+    t1 = u -> esq;
+
+	int posicao_pivo_esq = eh_filho_esquerdo(pivo);
+	pivo -> dir = t1;
+
+    if(t1 != NULL){
+		t1->pai = pivo;
 	}
 
-    if(temp->esq != NULL && temp->dir != NULL) {
-        temp->dado = maior_elemento(temp->esq);
-        remover(temp->dado, &temp->esq);
-        return;
-    }
-    if(temp->esq != NULL && temp->dir == NULL) {
-       	temp->dado = temp->esq->dado;
-        temp->cor = PRETO;
-		remover(temp->dado, &temp->esq);
-		return;
-    }
-    if(temp->dir != NULL && temp->esq == NULL) {
-       	temp->dado = temp->dir->dado;
-        temp->cor = PRETO;
-		remover(temp->dado, &temp->dir);
-		return;
-    }
-	if(temp->cor == VERMELHO) {
-        if(eh_esquerdo(temp)) {
-            temp->pai->esq = NULL;
-        }
-		else {
-            temp->pai->dir = NULL;
-        }
-        return ;
-    }
+	u -> esq = pivo;
+	u -> pai = pivo -> pai;
+	pivo -> pai = u;
 
-	temp->dado = 0;
-	temp->cor = DUPLO_PRETO;
+    pivo -> cor = VERMELHO;
+	u -> cor = PRETO;
 
-	if(eh_esquerdo(temp)) {
-        temp->pai->esq = NULL;
-    }
+	if(eh_raiz(u))
+		*raiz = u;
 	else {
-        temp->pai->dir = NULL;
-    }
-
-	reajustar(raiz, temp);
+		if(posicao_pivo_esq){
+			u->pai->esq = u;
+		} 
+        else {
+			u->pai->dir = u;
+		}
+	}
 }
 
+void remover(int valor, arvore *raiz){
+	arvore posicao;
+	posicao = *raiz;	
+	while(posicao != NULL) {
+		if(valor == posicao->dado) {
+			// 0 filhos
+			if(posicao->esq == NULL && posicao->dir == NULL) {					
+				//Remover raiz sem filhos					
+				if(eh_raiz(posicao)) {
+					*raiz = NULL;
+					break;
+				}
+				
+				if(posicao->cor == VERMELHO) {
+						if(eh_filho_esquerdo(posicao)){
+							posicao->pai->esq = NULL;
+						} else {
+							posicao->pai->dir = NULL;
+						}
+				break;			    
+                } 
+                else {							
+					no_null -> pai = posicao -> pai;
+					
+					if(eh_filho_esquerdo(posicao)){
+						posicao -> pai -> esq = no_null;
+					} 
+                    else {
+						posicao -> pai -> dir = no_null;
+					}
+					
+					reajustar(raiz, no_null);
+					break;						
+				} 
+			} 
+		// apenas o filho esquerdo
+		if(posicao -> dir == NULL){
+					posicao->esq->cor = PRETO;
+					if(eh_raiz(posicao)) {
+						*raiz = posicao->esq;
+					} 
+                    else {
+						if(eh_filho_esquerdo(posicao)) {
+							posicao->pai->esq = posicao->esq;
+						} 
+                        else {
+							posicao->pai->dir = posicao->esq;
+						}
+					}
+					break;
+			}			
+			
+		// apenas o filho direito
+		if(posicao -> esq == NULL){
+					posicao->dir->cor = PRETO;
+					if(eh_raiz(posicao)) {
+						*raiz = posicao->dir;
+					} 
+                    else {
+						if(eh_filho_esquerdo(posicao)) {
+							posicao->pai->esq = posicao->dir;
+						} 
+                        else {
+							posicao->pai->dir = posicao->dir;
+						}
+					}
+					break;
+			}
+			
+		// 2 filhos
+		if(posicao -> dir != NULL && posicao -> esq != NULL){
+				posicao->dado = maior_elemento(posicao->esq);
+				remover(posicao->dado, &(posicao->esq));
+				break;
+		}	
+	} 	
+			if(valor > posicao -> dado){
+				posicao = posicao -> dir;
+			} 
+            else {
+				posicao = posicao -> esq;
+			}	 	
+	} 	
+}
 
-void reajustar(arvore *raiz, arvore n) {
-    //Caso 1 - duplo preto é raiz
-    if(eh_raiz(n)) {
-		*raiz = NULL;
+void ajustar(arvore *raiz, arvore elemento){
+	while(cor(elemento->pai) == VERMELHO && cor(elemento) == VERMELHO) {
+			//Caso 1
+			if(cor(tio(elemento)) == VERMELHO) {
+				tio(elemento)->cor = PRETO;
+				elemento->pai->cor = PRETO;
+				elemento->pai->pai->cor = VERMELHO;
+				elemento = elemento->pai->pai;
+				continue;
+			} 
+
+			//Caso 2
+			if(eh_filho_esquerdo(elemento) &&
+             eh_filho_esquerdo(elemento->pai)) {
+				rotacao_simples_direita(raiz, elemento->pai->pai);
+				elemento->pai->cor = PRETO;
+				elemento->pai->dir->cor = VERMELHO;
+				continue;
+			}
+
+			//Caso 2b
+			if(!eh_filho_esquerdo(elemento) &&
+             !eh_filho_esquerdo(elemento->pai)) {
+				rotacao_simples_esquerda(raiz, elemento->pai->pai);
+				elemento->pai->cor = PRETO;
+				elemento->pai->esq->cor = VERMELHO;
+			    continue;
+			}
+
+			//Caso 3a
+			if(!eh_filho_esquerdo(elemento) && 
+             eh_filho_esquerdo(elemento->pai)) {
+			  rotacao_simples_esquerda(raiz, elemento->pai);
+				rotacao_simples_direita(raiz, elemento -> pai);
+				elemento->cor = PRETO;
+				elemento->dir->cor = VERMELHO;
+				elemento->esq->cor = VERMELHO;
+				continue;
+			}
+					
+			//Caso 3b
+			if(eh_filho_esquerdo(elemento) && 
+            !eh_filho_esquerdo(elemento->pai)) {
+				rotacao_simples_direita(raiz, elemento->pai);
+				rotacao_simples_esquerda(raiz, elemento->pai);
+				elemento->cor = PRETO;
+				elemento->dir->cor = VERMELHO;
+				elemento->esq->cor = VERMELHO;
+				continue;				
+			}
 	}
-	else{
-        n->cor = PRETO;
-    }
-    return;
+	(*raiz)->cor = PRETO;
+}
 
-    //Caso 2
-    if(eh_esquerdo(n)){
-		if(eh_nulo(n)){
-			if(n->pai->cor == PRETO && n->pai->dir->cor == VERMELHO && n->pai->dir->dir->cor == PRETO && n->pai->dir->esq->cor == PRETO){
-				 caso2(raiz, n);
-			    }
-		    }
+void reajustar(arvore *raiz, arvore elemento){
+	//Caso 1
+	if(eh_raiz(elemento)){
+		elemento->cor = PRETO;
+		return;
+	}
+	
+	//Caso 2
+	if(cor(elemento->pai) == PRETO &&
+	 cor(irmao(elemento)) == VERMELHO &&
+	 (cor(irmao(elemento)->dir) == PRETO || irmao(elemento)->dir == NULL) &&
+	 (cor(irmao(elemento)->esq) == PRETO || irmao(elemento)->esq == NULL)) {
+
+		if(eh_filho_esquerdo(elemento)){
+			rotacao_simples_esquerda(raiz, elemento->pai);
+		} 
+        else {
+			rotacao_simples_direita(raiz, elemento->pai);
+		}	
+		elemento->pai->pai->cor = PRETO;
+		elemento->pai->cor = VERMELHO;
+        reajustar(raiz, elemento);
+		return;
+	}
+	
+	//Caso 3
+	if(cor(elemento->pai) == PRETO && cor(irmao(elemento)) == PRETO &&
+	(cor(irmao(elemento)->dir)  == PRETO || irmao(elemento)->dir == NULL) && 
+    (cor(irmao(elemento)->esq)  == PRETO || irmao(elemento)->esq == NULL)){	
+	    irmao(elemento)->cor = VERMELHO;
+	    retira_duplo_preto(raiz, elemento);
+	    reajustar(raiz, elemento->pai);	
 	    return;
-    }
-	//Caso 2 simetrico
-	if(eh_direito(n)){
-		if(eh_nulo(n)){
-			if(n->pai->cor == PRETO && n->pai->esq->cor == VERMELHO && n->pai->esq->esq->cor == PRETO && n->pai->esq->dir->cor == PRETO){
-				caso2_simetrico(raiz, n);
-			}
-		}
+	}
+	
+	//Caso 4
+	if(cor(elemento->pai) == VERMELHO && 
+	(cor(irmao(elemento)) == PRETO || irmao(elemento) == NULL) &&
+	(cor(irmao(elemento)->dir) == PRETO || irmao(elemento)->dir == NULL) && 
+    (cor(irmao(elemento)->esq) == PRETO || irmao(elemento)->esq == NULL)){
+		elemento->pai->cor = PRETO;
+		irmao(elemento)->cor = VERMELHO;
+		retira_duplo_preto(raiz, elemento); 
 		return;
 	}
 
-    //Caso 3
-    if(eh_esquerdo(n)){
-		if(eh_nulo(n)){
-			if(n->pai->cor == PRETO && n->pai->dir->cor == PRETO && n->pai->dir->dir->cor == PRETO && n->pai->dir->esq->cor == PRETO){
-				caso3(raiz,n);
-			}
-		}
+	//Caso 5a
+	if(eh_filho_esquerdo(elemento) && cor(irmao(elemento)) == PRETO &&
+	(cor(irmao(elemento)->dir) == PRETO || irmao(elemento)->dir == NULL) && 
+     cor(irmao(elemento)->esq) == VERMELHO){		
+		rotacao_simples_direita(raiz, irmao(elemento));
+		irmao(elemento)->cor = PRETO;
+		irmao(elemento)->dir->cor = VERMELHO;
+		reajustar(raiz, elemento);	
+	    return;
+	}
+	
+	//Caso 5b
+	if(!eh_filho_esquerdo(elemento) && cor(irmao(elemento)) == PRETO &&
+	(cor(irmao(elemento)->esq) == PRETO || irmao(elemento)->esq == NULL) && 
+     cor(irmao(elemento)->dir) == VERMELHO){		
+		rotacao_simples_esquerda(raiz, irmao(elemento));
+		irmao(elemento)->cor = PRETO;
+		irmao(elemento)->esq->cor = VERMELHO;
+		reajustar(raiz, elemento);
+	    return;
+	}
+	
+	//Caso 6a
+	if(eh_filho_esquerdo(elemento) && 
+		cor(irmao(elemento)) == PRETO && 
+		cor(irmao(elemento) -> dir) == VERMELHO){	
+		enum cor cor_original_pai = cor(elemento -> pai);
+		
+		rotacao_simples_esquerda(raiz, elemento -> pai);	
+		elemento->pai->pai->cor = cor_original_pai;
+		elemento->pai->cor = PRETO;
+		tio(elemento)->cor = PRETO;	
+		retira_duplo_preto(raiz, elemento);
 		return;
-    	}
-
-	//Caso 3 simetrico
-	if(eh_direito(n)){
-		if(eh_nulo(n)){
-			if(n->pai->cor == PRETO && n->pai->esq->cor == PRETO && n->pai->esq->esq->cor == PRETO && n->pai->esq->dir->cor == PRETO){
-				caso3_simetrico(raiz, n);
-			}
-		}
+	}
+    
+    //Caso 6b	
+	if(!eh_filho_esquerdo(elemento) && 
+		cor(irmao(elemento)) == PRETO && 
+		cor(irmao(elemento)->esq) == VERMELHO){
+		enum cor cor_original_pai = cor(elemento->pai);
+		
+		rotacao_simples_direita(raiz, elemento->pai);	
+		elemento->pai->pai->cor = cor_original_pai;
+		elemento->pai->cor = PRETO;
+		tio(elemento)->cor = PRETO;		
+		retira_duplo_preto(raiz, elemento);
 		return;
-    	}
-
-
-    //Caso 4
-    if(eh_esquerdo(n)){
-		if(eh_nulo(n)){
-			if(n->pai->cor == VERMELHO && n->pai->dir->cor == PRETO && n->pai->dir->dir->cor == PRETO && n->pai->dir->esq->cor == PRETO){
-				caso4(raiz, n);
-			}
-		}
-		return;
-    }
-
-	//Caso 4 simetrico
-	if(eh_direito(n)){
-		if(eh_nulo(n)){
-			if(n->pai->cor == VERMELHO && n->pai->esq->cor == PRETO && n->pai->esq->esq->cor == PRETO && n->pai->esq->dir->cor == PRETO){
-				caso4_simetrico(raiz, n);
-			}
-		}
-		return;
-    }
-
-    //Caso 5
-    if(eh_esquerdo(n)){
-   		if(eh_nulo(n)){
-			if(n->pai->dir->cor == PRETO && n->pai->dir->esq->cor == VERMELHO && n->pai->dir->dir->cor == PRETO){
-				caso5(raiz, n);
-			}
-		}
-		return;
-    }
-
-	//Caso 5 simetrico
-    if(eh_direito(n)){
-   		if(eh_nulo(n)){
-			if(n->pai->esq->cor == PRETO && n->pai->esq->dir->cor == VERMELHO && n->pai->esq->esq->cor == PRETO){
-				caso5_simetrico(raiz, n);
-			}
-		}
-		return;
-    }
-
-    //Caso 6
-    if(eh_esquerdo(n)){
-		if(eh_nulo(n)){
-			if(n->pai->dir->cor == PRETO && n->pai->dir->dir->cor == VERMELHO){
-				caso6(raiz, n);
-			}
-		}
-		return;
-   	}
-
-	//Caso 6 simetrico
-    if(eh_direito(n)){
-		if(eh_nulo(n)){
-			if(n->pai->esq->cor == PRETO && n->pai->esq->esq->cor == VERMELHO){
-				caso6_simetrico(raiz, n);
-			}
-		}
-		return;
-   	}
-}
-
-void caso2(arvore *raiz, arvore n){
-	arvore p, aux;
-	p = n->pai;
-	aux = p->dir;
-
-	int posicao_pivo_esq = eh_esquerdo(p);
-
-	p->dir = aux->esq;
-	aux->esq = p;
-
-	aux->pai = p->pai;
-
-	if(p->dir != NULL){
-		p->dir->pai = p;
-	}
-	p->pai = aux;
-
-	p->cor = VERMELHO;
-	aux->cor = PRETO;
-
-	if(eh_raiz(aux)){
-		*raiz = aux;
-	}
-	else{
-		if(posicao_pivo_esq){
-			aux->pai->esq = aux;
-		}
-		else{
-			aux->pai->dir = aux;
-		}
 	}
 }
 
-void caso2_simetrico(arvore *raiz, arvore n){
-	arvore p, aux;
-	p = n->pai;
-	aux = p->esq;
-
-	int posicao_pivo_esq = eh_direito(p);
-
-	p->esq = aux->dir;
-	aux->dir = p;
-
-	aux->pai = p->pai;
-
-	if(p->esq != NULL){
-		p->esq->pai = p;
-	}
-		p->pai = aux;
-
-	p->cor = VERMELHO;
-	aux->cor = PRETO;
-
-	if(eh_raiz(aux)){
-		*raiz = aux;
-	}
-	else{
-		if(posicao_pivo_esq){
-			aux->pai->esq = aux;
-		}
-		else{
-			aux->pai->dir = aux;
-		}
-	}
-}
-
-void caso3(arvore *raiz, arvore n){
-	if(n->dir == NULL && n->esq == NULL){
-		n->cor = VERMELHO;
-	}
-	else{
-		n->cor = PRETO;
-	}
-	n->pai->cor = DUPLO_PRETO;
-	n->pai->dir->cor = VERMELHO;
-}
-
-void caso3_simetrico(arvore *raiz, arvore n){
-	if(n->dir == NULL && n->esq == NULL){
-		n->cor = VERMELHO;
-	}
-	else{
-		n->cor = PRETO;
-	}
-	n->pai->cor = DUPLO_PRETO;
-	n->pai->esq->cor = VERMELHO;
-}
-
-void caso4(arvore *raiz, arvore n){
-	if(n->dir == NULL && n->esq == NULL){
-		n->cor = VERMELHO;
-	}
-	else{
-		n->cor = PRETO;
-	}
-	n->pai->cor = PRETO;
-	n->pai->dir->cor = VERMELHO;
-}
-
-void caso4_simetrico(arvore *raiz, arvore n){
-	if(n->dir == NULL && n->esq == NULL){
-		n->cor = VERMELHO;
-	}
-	else{
-		n->cor = PRETO;
-	}
-	n->pai->cor = PRETO;
-	n->pai->esq->cor = VERMELHO;
-}
-
-void caso5(arvore *raiz, arvore n){
-	arvore p, aux;
-	p = n->pai;
-	aux = p->dir;
-
-	p->dir = aux->esq;
-	aux->esq =aux->esq->dir;
-	p->dir->dir = aux;
-
-	p->dir->pai = p;
-	p->dir->dir->pai = p->dir;
-
-	p->dir->cor = PRETO;
-	p->dir->dir->cor = VERMELHO;
-}
-
-void caso5_simetrico(arvore *raiz, arvore n){
-	arvore p, aux;
-	p = n->pai;
-	aux = p->esq;
-
-	p->esq = aux->dir;
-	aux->dir = aux->dir->esq;
-	p->esq->esq = aux;
-
-	p->esq->pai = p;
-	p->esq->esq->pai = p->esq;
-
-	p->esq->cor = PRETO;
-	p->esq->esq->cor = VERMELHO;
-}
-
-void caso6(arvore *raiz, arvore n){
-	arvore p, aux;
-	p = n->pai;
-	aux = p->dir;
-
-	int posicao_pivo_esq = eh_esquerdo(p);
-
-	p->dir = aux->esq;
-	aux->esq = p;
-	aux->pai = p->pai;
-
-	if(p->dir!=NULL){
-		p->dir->pai = p;
-	}
-	p->pai = aux;
-
-	aux->cor = p->cor;
-	p->cor = PRETO;
-	aux->dir->cor = PRETO;
-	if(n->dir == NULL && n->esq == NULL){
-		p->esq->cor = VERMELHO;
-	}
-	else{
-		p->esq->cor = PRETO;
-	}
-
-
-	if(eh_raiz(aux)){
-		*raiz = aux;
-	}
-	else{
-		if(posicao_pivo_esq){
-			aux->pai->esq = aux;
-		}
-		else{
-			aux->pai->dir = aux;
-		}
-	}
-}
-
-void caso6_simetrico(arvore *raiz, arvore n){
-	arvore p, aux;
-	p = n->pai;
-	aux = p->esq;
-
-	int posicao_pivo_esq = eh_esquerdo(p);
-
-	p->esq = aux->dir;
-	aux->dir = p;
-
-	aux->pai = p->pai;
-
-	if(p->esq!=NULL){
-		p->esq->pai = p;
-	}
-
-	p->pai = aux;
-
-	aux->cor = p->cor;
-	p->cor = PRETO;
-	aux->esq->cor = PRETO;
-
-	if(n->dir == NULL && n->esq == NULL){
-		p->dir->cor = VERMELHO;
-	}
-	else{
-		p->dir->cor = PRETO;
-	}
-	if(eh_raiz(aux)){
-		*raiz = aux;
-	}
-	else{
-		if(posicao_pivo_esq){
-			aux->pai->esq = aux;
-		}
-		else{
-			aux->pai->dir = aux;
-		}
-	}
-
-}
